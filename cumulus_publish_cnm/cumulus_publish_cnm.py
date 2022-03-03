@@ -1,7 +1,9 @@
 import boto3
 import json
 import os
-# from cumulus_logger import CumulusLogger
+from cumulus_logger import CumulusLogger
+
+cumulus_logger = CumulusLogger('publish_cnm_logger')
 
 
 # load in Cumulus event (containing bucket and key)
@@ -15,8 +17,6 @@ def lambda_handler(event, context):
 		raise NameError('sns_endpoint is not set in environment')
 	if not list_key:
 		raise NameError('list_key is not set in environment')
-
-	debug = os.environ.get('debug')  # Can be empty for debugging purpose
 
 	s3 = boto3.resource('s3')
 	sns = boto3.resource('sns')
@@ -39,11 +39,8 @@ def lambda_handler(event, context):
 		)
 		response.append(r)
 
-	if debug:
-		print(f'sns_endpoint: {sns_endpoint}')
-		print(f'list_key: {list_key}')
-		print(f'debug: {debug}')
-		print("\n===================================================\n")
-		print(json.dumps(json_content))
+	cumulus_logger.debug(f'sns_endpoint: {sns_endpoint}')
+	cumulus_logger.debug(f'list_key: {list_key}')
+	cumulus_logger.debug(json.dumps(json_content))
 
 	return response

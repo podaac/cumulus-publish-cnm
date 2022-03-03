@@ -1,15 +1,16 @@
 [tool.poetry]
 name = "cumulus-publish-cnm"
-version = "0.1.0"
+version = "0.1.1"
 description = "Reads in list of CNM's and publishes to SNS topic"
 authors = ["Hong-Kit Randy Yeung <hong-kit.r.yeung@jpl.nasa.gov>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+cumulus-process = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"
-boto3 = "^1.21.10"
+boto3 = "^1.18.40"
 moto = "^3.0.5"
 
 [build-system]
