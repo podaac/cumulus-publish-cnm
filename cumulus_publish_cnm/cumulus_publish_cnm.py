@@ -1,6 +1,7 @@
 import boto3
 import json
 import os
+# from cumulus_logger import CumulusLogger
 
 
 # load in Cumulus event (containing bucket and key)
