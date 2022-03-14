@@ -8,25 +8,29 @@ from cumulus_publish_cnm.cumulus_publish_cnm import lambda_handler
 from moto import mock_s3, mock_sns
 
 lambda_input = {
-  "cumulus_meta": {
-    "cumulus_version": "9.9.0",
-    "message_source": "sfn",
-    "queueExecutionLimits": {
-      "https://sqs.us-west-2.amazonaws.com/065089468788/hryeung-ia-podaac-background-job-queue": 200,
-      "https://sqs.us-west-2.amazonaws.com/065089468788/hryeung-ia-podaac-backgroundProcessing": 5,
-      "https://sqs.us-west-2.amazonaws.com/065089468788/hryeung-ia-podaac-big-background-job-queue": 20,
-      "https://sqs.us-west-2.amazonaws.com/065089468788/hryeung-ia-podaac-forge-background-job-queue": 200,
-      "https://sqs.us-west-2.amazonaws.com/065089468788/hryeung-ia-podaac-tig-background-job-queue": 200
-    },
-    "state_machine": "arn:aws:states:us-west-2:065089468788:stateMachine:hryeung-ia-podaac-DiscoverWorkflow",
-    "system_bucket": "hryeung-ia-podaac-internal",
-    "queueUrl": "arn:aws:sqs:us-west-2:065089468788:hryeung-ia-podaac-startSF"
-  },
-  "replace": {
-    "Bucket": "hryeung-ia-podaac-internal",
-    "Key": "events/hryeung-ia-podaac-testingFunction-INPUT.json",
-    "TargetPath": "$"
-  }
+    "cma": {
+        "event": {
+            "cumulus_meta": {
+                "cumulus_version": "9.9.0",
+                "message_source": "sfn",
+                "queueExecutionLimits": {
+                    "https://sqs.us-west-2.amazonaws.com/065089468788/hryeung-ia-podaac-background-job-queue": 200,
+                    "https://sqs.us-west-2.amazonaws.com/065089468788/hryeung-ia-podaac-backgroundProcessing": 5,
+                    "https://sqs.us-west-2.amazonaws.com/065089468788/hryeung-ia-podaac-big-background-job-queue": 20,
+                    "https://sqs.us-west-2.amazonaws.com/065089468788/hryeung-ia-podaac-forge-background-job-queue": 200,
+                    "https://sqs.us-west-2.amazonaws.com/065089468788/hryeung-ia-podaac-tig-background-job-queue": 200
+                },
+                "state_machine": "arn:aws:states:us-west-2:065089468788:stateMachine:hryeung-ia-podaac-DiscoverWorkflow",
+                "system_bucket": "hryeung-ia-podaac-internal",
+                "queueUrl": "arn:aws:sqs:us-west-2:065089468788:hryeung-ia-podaac-startSF"
+            },
+            "replace": {
+                "Bucket": "hryeung-ia-podaac-internal",
+                "Key": "events/hryeung-ia-podaac-testingFunction-INPUT.json",
+                "TargetPath": "$"
+            }
+        }
+    }
 }
 
 s3_file_content = {
@@ -65,7 +69,7 @@ s3_file_content = {
 
 
 def test_version():
-    assert __version__ == '0.1.1'
+    assert __version__ == '0.1.2'
 
 
 @mock_s3

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cumulus-publish-cnm"
-version = "0.1.1"
+version = "0.1.2"
 description = "Reads in list of CNM's and publishes to SNS topic"
 authors = ["Hong-Kit Randy Yeung <hong-kit.r.yeung@jpl.nasa.gov>"]
 

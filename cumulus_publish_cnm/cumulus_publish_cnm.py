@@ -22,8 +22,8 @@ def lambda_handler(event, context):
 	sns = boto3.resource('sns')
 
 	# Get 'replace' settings (S3 file content)
-	bucket = event['replace']['Bucket']
-	file = event['replace']['Key']
+	bucket = event['cma']['event']['replace']['Bucket']
+	file = event['cma']['event']['replace']['Key']
 
 	content_object = s3.Object(bucket, file)
 	file_content = content_object.get()['Body'].read().decode('utf-8')
