@@ -1,46 +1,46 @@
-import boto3
 import json
-import os
+import boto3
 from cumulus_logger import CumulusLogger
+from cumulus_process import Process
 
-cumulus_logger = CumulusLogger('publish_cnm_logger')
+logger = CumulusLogger('publish_cnm_logger')
 
 
-# load in Cumulus event (containing bucket and key)
-# read in file, for each cnm, extract and trigger step function via SNS
+class PublishCNM(Process):
+	className = 'PublishCNM'
+
+	def __init__(self, *args, **kwargs):
+		super(PublishCNM, self).__init__(*args, **kwargs)
+		self.logger = logger
+		self.logger.debug('{} Entered __init__', self.className)
+
+		required = ['sns_endpoint']
+
+		for requirement in required:
+			if requirement not in self.config.keys():
+				raise Exception('%s config key is missing' % requirement)
+
+	def process(self):
+		# config
+		meta_sns_endpoint = self.config.get('sns_endpoint', '')
+
+		self.logger.debug('sns_endpoint: {}', meta_sns_endpoint)
+
+		sns = boto3.resource('sns')
+		# Trigger SNS into ingestion stream (for each granule)
+		platform_endpoint = sns.PlatformEndpoint(meta_sns_endpoint)
+		response = []
+
+		for item in self.input['cnm_list']:
+			r = platform_endpoint.publish(
+				Message=json.dumps(item)
+			)
+			response.append(r)
+		logger.debug(json.dumps(self.input))
+
+		return response
+
+
 def lambda_handler(event, context):
-	# Environment Variables
-	sns_endpoint = os.environ.get('sns_endpoint')
-	list_key = os.environ.get('list_key')
-
-	if not sns_endpoint:
-		raise NameError('sns_endpoint is not set in environment')
-	if not list_key:
-		raise NameError('list_key is not set in environment')
-
-	s3 = boto3.resource('s3')
-	sns = boto3.resource('sns')
-
-	# Get 'replace' settings (S3 file content)
-	bucket = event['cma']['event']['replace']['Bucket']
-	file = event['cma']['event']['replace']['Key']
-
-	content_object = s3.Object(bucket, file)
-	file_content = content_object.get()['Body'].read().decode('utf-8')
-	json_content = json.loads(file_content)
-
-	# Trigger SNS into ingestion stream (for each granule)
-	platform_endpoint = sns.PlatformEndpoint(sns_endpoint)
-	response = []
-
-	for item in json_content['payload'][list_key]:
-		r = platform_endpoint.publish(
-			Message=json.dumps(item)
-		)
-		response.append(r)
-
-	cumulus_logger.debug(f'sns_endpoint: {sns_endpoint}')
-	cumulus_logger.debug(f'list_key: {list_key}')
-	cumulus_logger.debug(json.dumps(json_content))
-
-	return response
+	logger.setMetadata(event, context)
+	return PublishCNM.cumulus_handler(event, context=context)
