@@ -4,6 +4,14 @@ cumulus-publish-cnm
 This is the python code for the lambda `cumulus-publish-cmn`.
 It takes in a list of cnm's (Cloud Notification Mechanism) and publishes each one to the specified ingestion SNS (provider-input-sns)
 
+Required input
+====
+This function is intended to be used as a cumulus task and this requires ``sns_endpoint`` from the ``task_config``
+::
+    "task_config": {
+        "sns_endpoint": "{$.meta.ingest_workflow_sns}"
+    }
+
 Build (as a zip to load to AWS Lambda)
 ====
 `This <https://chariotsolutions.com/blog/post/building-lambdas-with-poetry/>`_ page contains some good info on the overall "building a zip with poetry that's compatible with AWS Lambda".
@@ -43,7 +51,7 @@ Then upload ``artifact.zip`` to any location you plan to use it
 
 Testing
 ====
-Run the ``poetry run pytest`` command; you should see a similar output::
+Run the ``poetry run pytest tests`` command; you should see a similar output::
 
     platform darwin -- Python 3.8.9, pytest-7.0.1, pluggy-1.0.0
     rootdir: /Users/hryeung/PycharmProjects/jpl/cumulus_publish_cnm

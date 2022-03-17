@@ -22,7 +22,7 @@ lambda_input = {
             }
         },
         "task_config": {
-            "sns_endpoint": "{$.meta.provider}"
+            "sns_endpoint": "{$.meta.ingest_workflow_sns}"
         }
     }
 }
