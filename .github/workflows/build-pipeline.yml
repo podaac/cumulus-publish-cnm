@@ -79,11 +79,11 @@ jobs:
                 echo "software_version=$(poetry version | awk '{print $2}')" >> $GITHUB_ENV
                 echo "venue=ops" >> $GITHUB_ENV
 
-      - name: Install cumulus_granule_to_cnm
+      - name: Install cumulus_publish_cnm
         run: poetry install
 
       - name: Test and coverage
-        run: poetry run pytest --cov cumulus_granule_to_cnm tests -v
+        run: poetry run pytest --cov cumulus_publish_cnm tests -v
 
       - name: Commit Version Bump
               # If building develop, a release branch, or main then we commit the version bump back to the repo
