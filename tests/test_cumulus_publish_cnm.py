@@ -262,6 +262,7 @@ def test_lambda_handler(monkeypatch):  # monkeypatch enables environment variabl
 
     try:
         response = lambda_handler(lambda_input, {})
+        print(response.keys())
     except Exception as e:
         print(e)
 

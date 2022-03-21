@@ -83,7 +83,7 @@ jobs:
         run: poetry install
 
       - name: Test and coverage
-        run: poetry run pytest --cov cumulus_publish_cnm tests -v
+        run: poetry run pytest --cov cumulus_publish_cnm tests -v -s
 
       - name: Commit Version Bump
               # If building develop, a release branch, or main then we commit the version bump back to the repo
