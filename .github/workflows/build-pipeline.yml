@@ -11,6 +11,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  AWS_DEFAULT_REGION: us-west-2
 
 jobs:
   # First job in the workflow installs and verifies the software
