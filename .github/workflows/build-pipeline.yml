@@ -86,6 +86,11 @@ jobs:
       - name: Test and coverage
         run: poetry run pytest --cov cumulus_publish_cnm tests -v -s
 
+      - name: pyLint & flake8
+        run: |
+          poetry run pylint --exit-zero   cumulus_granule_to_cnm
+          poetry run flake8 --ignore=E501 cumulus_granule_to_cnm
+
       - name: Run Snyk on Python
         uses: snyk/actions/python-3.8@master
         env:
