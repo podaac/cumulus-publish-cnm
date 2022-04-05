@@ -10,7 +10,7 @@ class PublishCNM(Process):
     className = 'PublishCNM'
 
     def __init__(self, *args, **kwargs):
-        super(PublishCNM, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.logger = logger
         self.logger.debug('{} Entered __init__', self.className)
 
@@ -18,7 +18,7 @@ class PublishCNM(Process):
 
         for requirement in required:
             if requirement not in self.config.keys():
-                raise Exception('%s config key is missing' % requirement)
+                raise Exception(f'{requirement} config key is missing')
 
     def process(self):
         # config
@@ -32,10 +32,10 @@ class PublishCNM(Process):
         response = []
 
         for item in self.input['cnm_list']:
-            r = platform_endpoint.publish(
+            resp = platform_endpoint.publish(
                 Message=json.dumps(item)
             )
-            response.append(r)
+            response.append(resp)
         logger.debug(json.dumps(self.input))
 
         return response
