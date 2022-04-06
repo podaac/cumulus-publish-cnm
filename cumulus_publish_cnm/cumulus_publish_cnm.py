@@ -36,7 +36,7 @@ class PublishCNM(Process):
                 Message=json.dumps(item)
             )
             response.append(resp)
-        logger.debug(json.dumps(self.input))
+        self.logger.debug(json.dumps(self.input))
 
         return response
 
