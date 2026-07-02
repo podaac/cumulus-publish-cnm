@@ -3,6 +3,7 @@ import json
 
 import pytest
 
+from botocore.config import Config
 from cumulus_publish_cnm import __version__
 from cumulus_publish_cnm.cumulus_publish_cnm import lambda_handler
 from moto import mock_s3, mock_sns
@@ -244,11 +245,22 @@ def test_version():
 def test_lambda_handler(monkeypatch):  # monkeypatch enables environment variable setup
     """Publish Data and assure response"""
     # S3 client setup
-    s3_client = boto3.client('s3', region_name='us-east-1')  # s3 doesn't like us-west-2...
+    s3_client = boto3.client(
+        's3',
+        region_name='us-east-1',
+        config=Config(
+            request_checksum_calculation='when_required',
+            response_checksum_validation='when_required'
+        )
+    )
     test_bucket_name = 'dummy_bucket'
     test_bucket_key = 'events/dummy_aws_s3_object.json'
     s3_client.create_bucket(Bucket=test_bucket_name)
-    s3_client.put_object(Body=json.dumps(s3_file_content), Bucket=test_bucket_name, Key=test_bucket_key)
+    s3_client.put_object(
+        Body=json.dumps(s3_file_content).encode('utf-8'),
+        Bucket=test_bucket_name,
+        Key=test_bucket_key
+    )
 
     # SNS client setup
     sns_client = boto3.client('sns', region_name='us-west-2')
@@ -260,11 +272,7 @@ def test_lambda_handler(monkeypatch):  # monkeypatch enables environment variabl
 
     lambda_input['cma']['task_config']['sns_endpoint'] = topic_arn
 
-    try:
-        response = lambda_handler(lambda_input, {})
-        print(response.keys())
-    except Exception as e:
-        print(e)
+    response = lambda_handler(lambda_input, {})
 
     assert response['payload'][0]['ResponseMetadata']['HTTPStatusCode'] is 200
 
@@ -275,11 +283,23 @@ def test_lambda_missing_environment_variables():
 
     """Publish Data and assure response"""
     # S3 client setup
-    s3_client = boto3.client('s3', region_name='us-east-1')  # s3 doesn't like us-west-2...
+    s3_client = boto3.client(
+        's3',
+        region_name='us-east-1',
+        config=Config(
+            request_checksum_calculation='when_required',
+            response_checksum_validation='when_required'
+        )
+    )
+
     test_bucket_name = 'dummy_bucket'
     test_bucket_key = 'events/dummy_aws_s3_object.json'
     s3_client.create_bucket(Bucket=test_bucket_name)
-    s3_client.put_object(Body=json.dumps(s3_file_content), Bucket=test_bucket_name, Key=test_bucket_key)
+    s3_client.put_object(
+        Body=json.dumps(s3_file_content).encode('utf-8'),
+        Bucket=test_bucket_name,
+        Key=test_bucket_key
+    )
 
     # SNS client setup
     sns_client = boto3.client('sns', region_name='us-west-2')
